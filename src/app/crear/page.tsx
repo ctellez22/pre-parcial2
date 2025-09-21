@@ -9,7 +9,7 @@ export default function Page() {
   const [image, setImage] = useState("");
   const router = useRouter();
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const body = { name, birthDate, description, image };
 
