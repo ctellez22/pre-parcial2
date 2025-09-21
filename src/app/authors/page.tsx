@@ -1,11 +1,43 @@
 "use client";
+
 import styles from './page.module.css';
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+interface Editorial {
+  name: string;
+}
+
+interface Book {
+  id: string | number;
+  name: string;
+  image?: string;
+  publishingDate?: string;
+  editorial?: Editorial;
+  description?: string;
+}
+
+interface Prize {
+  id: string | number;
+  name: string;
+  premiationDate?: string;
+  description?: string;
+  organization?: { name: string };
+}
+
+interface Author {
+  id: string | number;
+  name: string;
+  image?: string;
+  birthDate?: string;
+  description?: string;
+  books?: Book[];
+  prizes?: Prize[];
+}
+
 export default function AuthorsPage() {
   const router = useRouter();
-  const [authors, setAuthors] = useState([]);
+  const [authors, setAuthors] = useState<Author[]>([]);
 
   useEffect(() => {
     fetch("http://127.0.0.1:8080/api/authors", { cache: "no-store" })
@@ -13,17 +45,17 @@ export default function AuthorsPage() {
       .then(setAuthors);
   }, []);
 
-  async function handleDelete(id) {
+  async function handleDelete(id: string | number) {
     if (window.confirm('¿Seguro que quieres eliminar este autor?')) {
       await fetch(`http://127.0.0.1:8080/api/authors/${id}`, { method: 'DELETE' });
-      setAuthors((prev) => prev.filter((a) => a.id !== id));
+  setAuthors((prev) => prev.filter((a) => a.id !== id));
     }
   }
 
   return (
     <main className={styles.container}>
       <h1 className={styles.title}>Autores</h1>
-      {authors.map((a) => (
+  {authors.map((a) => (
         <div key={a.id}>
           <div style={{ marginBottom: 8, display: 'flex', gap: 8 }}>
             <a href={`/editar/${a.id}`} className={styles.editBtn}>Editar</a>
@@ -44,7 +76,7 @@ export default function AuthorsPage() {
                 <div className={styles.section}>
                   <div className={styles.sectionTitle}>Libros</div>
                   <div className={styles.books}>
-                    {a.books.map((b) => (
+                    {a.books.map((b: Book) => (
                       <div key={b.id} className={styles.bookCard}>
                         <img src={b.image} alt={b.name} className={styles.bookImg} />
                         <div className={styles.bookName}>{b.name}</div>
@@ -61,7 +93,7 @@ export default function AuthorsPage() {
                 <div className={styles.section}>
                   <div className={styles.sectionTitle}>Premios</div>
                   <div className={styles.prizes}>
-                    {a.prizes.map((p) => (
+                    {a.prizes.map((p: Prize) => (
                       <div key={p.id} className={styles.prizeCard}>
                         <div className={styles.prizeName}>{p.name}</div>
                         <div className={styles.prizeDate}>Fecha: {p.premiationDate}</div>
