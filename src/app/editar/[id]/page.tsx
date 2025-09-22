@@ -25,7 +25,7 @@ export default function Page() {
       .catch(() => {});
   }, [id]);
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await fetch(`http://127.0.0.1:8080/api/authors/${id}`, {
       method: "PUT",
